@@ -20,7 +20,11 @@ public class CpReceiver extends BroadcastReceiver {
             }
             String name = topActivity.getLocalClassName();
             if (name.equals("MainActivity")) {
-                startMainActivity(context, intent);
+                //startMainActivity(context, intent);
+                Intent i = new Intent();
+                i.setAction("com.zf.lottery.MESSAGE");
+                i.putExtras(intent.getExtras());
+                context.sendBroadcast(i);
             }
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             startMainActivity(context, intent);
@@ -28,9 +32,9 @@ public class CpReceiver extends BroadcastReceiver {
     }
 
     private void startMainActivity(Context context, Intent intent) {
-        Intent i = new Intent(context, MainActivity.class);
+        Intent i = new Intent(context,MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtras(intent.getExtras());
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(i);
     }
 }

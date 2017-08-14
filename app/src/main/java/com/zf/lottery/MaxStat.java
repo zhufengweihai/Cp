@@ -1,6 +1,8 @@
 package com.zf.lottery;
 
-public class MaxStat {
+import java.io.Serializable;
+
+public class MaxStat implements Serializable{
     public static final String KEY_MAX_STAT = "MaxStat";
 
     private int type = -1;

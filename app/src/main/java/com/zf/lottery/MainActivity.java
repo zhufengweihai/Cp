@@ -1,8 +1,10 @@
 package com.zf.lottery;
 
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -20,14 +22,14 @@ import de.codecrafters.tableview.TableView;
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 
 public class MainActivity extends AppCompatActivity {
-    private TableView tableView;
+    private BroadcastReceiver messageReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tableView = (TableView) findViewById(R.id.tableView);
+        TableView tableView = (TableView) findViewById(R.id.tableView);
         String[] titles = {"类型", "号码", "当前", "最值"};
         SimpleTableHeaderAdapter headAdapter = new SimpleTableHeaderAdapter(this, titles);
         headAdapter.setTypeface(Typeface.NORMAL);
@@ -37,20 +39,45 @@ public class MainActivity extends AppCompatActivity {
         tableView.setHeaderBackgroundColor(Color.GRAY);
 
         handleData(getIntent());
+        createMessageReceiver();
+    }
+
+    private void createMessageReceiver() {
+        messageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if ("com.zf.lottery.MESSAGE".equals(intent.getAction())) {
+                    handleData(intent);
+                }
+            }
+        };
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
+    protected void onResume() {
+        super.onResume();
+        registerMessageReceiver();
+    }
 
-        handleData(intent);
+    private void registerMessageReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        filter.addAction("com.zf.lottery.MESSAGE");
+        registerReceiver(messageReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(messageReceiver);
     }
 
     private void handleData(Intent intent) {
         cancelNotification();
         try {
-            List<MaxStat> maxStats = toMaxStats(intent.getExtras());
-            tableView.setDataAdapter(new ResultAdapter(this, maxStats));
+            List<MaxStat> stats = toMaxStats(intent.getExtras());
+            TableView tableView = (TableView) findViewById(R.id.tableView);
+            tableView.setDataAdapter(new ResultAdapter(this, stats));
         } catch (JSONException e) {
             e.printStackTrace();
         }
