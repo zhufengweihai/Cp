@@ -2,30 +2,23 @@ package com.zf.lottery;
 
 import java.io.Serializable;
 
-public class MaxStat implements Serializable{
+public class MaxStat implements Serializable {
     public static final String KEY_MAX_STAT = "MaxStat";
 
-    private int type = -1;
+    private StarType type = null;
     private int number = -1;
     private int absence = -1;
     private int maxAbsence = -1;
+    private float probability = -1f;
 
     public MaxStat() {
     }
 
-    public MaxStat(int type, int number, int absence, int maxAbsence) {
-        super();
-        this.type = type;
-        this.number = number;
-        this.absence = absence;
-        this.maxAbsence = maxAbsence;
-    }
-
-    public int getType() {
+    public StarType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(StarType type) {
         this.type = type;
     }
 
@@ -53,4 +46,11 @@ public class MaxStat implements Serializable{
         this.maxAbsence = maxAbsence;
     }
 
+    public float getProbability() {
+        return probability;
+    }
+
+    public void setProbability(float probability) {
+        this.probability = probability;
+    }
 }

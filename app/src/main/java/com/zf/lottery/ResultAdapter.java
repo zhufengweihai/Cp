@@ -21,7 +21,7 @@ public class ResultAdapter extends TableDataAdapter<MaxStat> {
         String text = null;
         switch (columnIndex) {
             case 0:
-                text = StarType.values()[maxStat.getType()].getName();
+                text = maxStat.getType().getName();
                 break;
             case 1:
                 text = String.valueOf(maxStat.getNumber());

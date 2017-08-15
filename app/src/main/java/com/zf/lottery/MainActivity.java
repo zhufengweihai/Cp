@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     @NonNull
@@ -102,10 +101,29 @@ public class MainActivity extends AppCompatActivity {
         for (String statString : statStrings) {
             String[] data = statString.split(",");
             MaxStat maxStat = new MaxStat();
-            maxStat.setType(Integer.parseInt(data[0]));
+            maxStat.setType(StarType.values()[Integer.parseInt(data[0])]);
             maxStat.setNumber(Integer.parseInt(data[1]));
             maxStat.setAbsence(Integer.parseInt(data[2]));
             maxStat.setMaxAbsence(Integer.parseInt(data[3]));
+            switch (maxStat.getType()) {
+                case FirstThree:
+                case LastThree:
+                    maxStat.setProbability((float) Math.pow(0.999, maxStat.getAbsence()));
+                    break;
+                case CombTwo:
+                    int num = maxStat.getNumber();
+                    if (num % 10 != num / 10) {
+                        maxStat.setProbability((float) Math.pow(1 - 1f / 45, maxStat.getAbsence()));
+                        break;
+                    }
+                case FirstTwo:
+                case LastTwo:
+                    maxStat.setProbability((float) Math.pow(0.99, maxStat.getAbsence()));
+                    break;
+                case CombThree:
+
+                    break;
+            }
             stats.add(maxStat);
         }
         return stats;
