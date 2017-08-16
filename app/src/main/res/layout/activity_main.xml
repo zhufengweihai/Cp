@@ -11,5 +11,5 @@
         android:id="@+id/tableView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:tableView_columnCount="4"/>
+        app:tableView_columnCount="5"/>
 </android.support.constraint.ConstraintLayout>

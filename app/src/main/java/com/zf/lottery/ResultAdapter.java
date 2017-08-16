@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import de.codecrafters.tableview.TableDataAdapter;
 
@@ -31,6 +32,9 @@ public class ResultAdapter extends TableDataAdapter<MaxStat> {
                 break;
             case 3:
                 text = String.valueOf(maxStat.getMaxAbsence());
+                break;
+            case 4:
+                text = String.format(Locale.getDefault(), "%.2f", maxStat.getProbability() * 10000);
                 break;
         }
         textView.setText(text);

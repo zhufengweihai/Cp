@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TableView tableView = (TableView) findViewById(R.id.tableView);
-        String[] titles = {"类型", "号码", "当前", "最值"};
+        String[] titles = {"类型", "号码", "当前", "最值", "概率"};
         SimpleTableHeaderAdapter headAdapter = new SimpleTableHeaderAdapter(this, titles);
         headAdapter.setTypeface(Typeface.NORMAL);
         headAdapter.setTextSize(15);
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         handleData(getIntent());
         createMessageReceiver();
+        registerMessageReceiver();
     }
 
     private void createMessageReceiver() {
@@ -53,12 +54,6 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerMessageReceiver();
-    }
-
     private void registerMessageReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
@@ -67,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         unregisterReceiver(messageReceiver);
     }
 
@@ -106,12 +101,25 @@ public class MainActivity extends AppCompatActivity {
             maxStat.setAbsence(Integer.parseInt(data[2]));
             maxStat.setMaxAbsence(Integer.parseInt(data[3]));
             switch (maxStat.getType()) {
+                case CombThree:
+                    int num = maxStat.getNumber();
+                    int num1 = num / 100;
+                    int num2 = (num / 10) % 10;
+                    int num3 = num % 100;
+                    if (num1 == num2 && num1 == num3) {
+                        maxStat.setProbability((float) Math.pow(0.999, maxStat.getAbsence()));
+                    } else if (num1 == num2 || num1 == num3 || num2 == num3) {
+                        maxStat.setProbability((float) Math.pow(0.997, maxStat.getAbsence()));
+                    } else {
+                        maxStat.setProbability((float) Math.pow(0.994, maxStat.getAbsence()));
+                    }
+                    break;
                 case FirstThree:
                 case LastThree:
                     maxStat.setProbability((float) Math.pow(0.999, maxStat.getAbsence()));
                     break;
                 case CombTwo:
-                    int num = maxStat.getNumber();
+                    num = maxStat.getNumber();
                     if (num % 10 != num / 10) {
                         maxStat.setProbability((float) Math.pow(1 - 1f / 45, maxStat.getAbsence()));
                         break;
@@ -119,9 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 case FirstTwo:
                 case LastTwo:
                     maxStat.setProbability((float) Math.pow(0.99, maxStat.getAbsence()));
-                    break;
-                case CombThree:
-
                     break;
             }
             stats.add(maxStat);
