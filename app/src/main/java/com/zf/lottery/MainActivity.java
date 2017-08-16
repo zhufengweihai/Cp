@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,8 @@ import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 
 public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver messageReceiver;
+    private SoundPool soundPool;
+    private int soundId = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         headAdapter.setTextColor(Color.BLACK);
         tableView.setHeaderAdapter(headAdapter);
         tableView.setHeaderBackgroundColor(Color.GRAY);
+
+        soundPool = new SoundPool(1, AudioManager.STREAM_SYSTEM, 5);
+        soundId = soundPool.load(this, R.raw.sound, 1);
 
         handleData(getIntent());
         createMessageReceiver();
@@ -73,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
             List<MaxStat> stats = toMaxStats(intent.getExtras());
             TableView tableView = (TableView) findViewById(R.id.tableView);
             tableView.setDataAdapter(new ResultAdapter(this, stats));
+            for (MaxStat stat : stats) {
+                if (Math.round(stat.getProbability() * 10000) <= 2) {
+                    soundPool.play(soundId, 1, 1, 0, 3, 1);
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
