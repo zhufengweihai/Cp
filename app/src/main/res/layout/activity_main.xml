@@ -8,7 +8,7 @@
     tools:context="com.zf.lottery.MainActivity">
 
     <de.codecrafters.tableview.TableView
-        android:id="@+id/tableView"
+        android:id="@+id/maxStatView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:tableView_columnCount="5"/>
