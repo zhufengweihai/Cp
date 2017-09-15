@@ -1,5 +1,7 @@
 package com.zf.lottery;
 
+import com.blankj.utilcode.util.StringUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +27,7 @@ public class StatHandler {
         return stats;
     }
 
-    public void hanlder() throws JSONException {
+    public void handle() throws JSONException {
         if (content == null) {
             return;
         }
@@ -33,12 +35,15 @@ public class StatHandler {
         String[] statStrings = jsonObject.getString(KEY_STAT).split(":");
         String maxStatString = statStrings[0];
         String groupStatString = statStrings[1];
-        handlegroupStat(maxStatString);
+        handleMaxStat(maxStatString);
         handleGroupStat(groupStatString);
     }
 
-    private void handlegroupStat(String groupStatString) {
-        String[] statStrings = groupStatString.split(";");
+    private void handleMaxStat(String maxStatString) {
+        if (StringUtils.isEmpty(maxStatString)) {
+            return;
+        }
+        String[] statStrings = maxStatString.split(";");
         for (String statString : statStrings) {
             String[] data = statString.split(",");
             MaxStat maxStat = new MaxStat();
@@ -48,7 +53,6 @@ public class StatHandler {
             maxStat.setMaxAbsence(Integer.parseInt(data[3]));
             switch (maxStat.getType()) {
                 case CombTwo:
-                    int num = maxStat.getNumber();
                     maxStat.setProbability((float) Math.pow(0.98, maxStat.getAbsence()));
                     break;
                 case FirstTwo:
@@ -61,6 +65,9 @@ public class StatHandler {
     }
 
     private void handleGroupStat(String groupStatString) {
+        if (StringUtils.isEmpty(groupStatString)) {
+            return;
+        }
         String[] statStrings = groupStatString.split(";");
         for (String statString : statStrings) {
             String[] data = statString.split(",");

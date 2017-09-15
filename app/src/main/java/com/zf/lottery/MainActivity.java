@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
         String content = extras.getString(JPushInterface.EXTRA_EXTRA);
         StatHandler handler = new StatHandler(content);
+        handler.handle();
         return handler.getStats();
     }
 
