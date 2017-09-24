@@ -28,7 +28,7 @@ public class StatHandler {
     }
 
     public void handle() throws JSONException {
-        if (content == null) {
+        if (StringUtils.isEmpty(content)) {
             return;
         }
         JSONObject jsonObject = new JSONObject(content);
