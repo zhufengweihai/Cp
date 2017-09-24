@@ -34,9 +34,11 @@ public class StatHandler {
         JSONObject jsonObject = new JSONObject(content);
         String[] statStrings = jsonObject.getString(KEY_STAT).split(":");
         String maxStatString = statStrings[0];
-        String groupStatString = statStrings[1];
         handleMaxStat(maxStatString);
-        handleGroupStat(groupStatString);
+        if (statStrings.length == 2) {
+            String groupStatString = statStrings[1];
+            handleGroupStat(groupStatString);
+        }
     }
 
     private void handleMaxStat(String maxStatString) {
@@ -56,6 +58,8 @@ public class StatHandler {
                     maxStat.setProbability((float) Math.pow(0.98, maxStat.getAbsence()));
                     break;
                 case FirstTwo:
+                    maxStat.setProbability((float) Math.pow(0.9801, maxStat.getAbsence()));
+                    break;
                 case LastTwo:
                     maxStat.setProbability((float) Math.pow(0.99, maxStat.getAbsence()));
                     break;

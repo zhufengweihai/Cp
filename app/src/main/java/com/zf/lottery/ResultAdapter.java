@@ -37,7 +37,7 @@ public class ResultAdapter extends TableDataAdapter<Object> {
                     text = String.valueOf(maxStat.getMaxAbsence());
                     break;
                 case 4:
-                    text = String.format(Locale.getDefault(), "%.2f", maxStat.getProbability() * 10000);
+                    text = String.format(Locale.getDefault(), "%.2f", maxStat.getProbability());
                     break;
             }
         } else {
